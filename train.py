@@ -379,12 +379,12 @@ def prepare_spec_image(spectrogram):
 def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeaker):
     # harded coded
     texts = [
-        "Scientists at the CERN laboratory say they have discovered a new particle.",
-        "There's a way to measure the acute emotional intelligence that has never gone out of style.",
-        "President Trump met with other leaders at the Group of 20 conference.",
-        "Generative adversarial network or variational auto-encoder.",
-        "Please call Stella.",
-        "Some have accepted this as a miracle without any physical explanation.",
+        "ɪʃʃjɛntɪstɪ fɪllɐbɔrɐtɔrjʊ tɐ cɛrn jɛɪdʊ lɪ skɔprɛʊ pɐrtɪʧɛllɐ ʤdɪdɐ.",
+        "ɛːmm mɔd kɪf tɪtkɛɪjɛl lɪntɛllɪʤɛntsɐ ɛmɔtstsjɔnɐlɪ lɪ ʔɐtt mɐ mɐrrɛt bɐrrɐ mɪllɪstɪl.",
+        "dɪk ɪlhɐptɐ lʊʤiːkh tɐ rɐsɪjɪːt kɪːnʊ flɐʔwɐ tɐːhɔm.",
+        "kɪːlʊ rrɔss ɪlfɔrn fɪs skɪːt.",
+        "ɐːlɐʔ ɪlktɪːb.",
+        "dɐʊn ɪnnɔvɛllɪ kɪːnʊ ppʊblɪkɐtɪ khɐːllɛʊwɛl dɐrbɐ.",
     ]
     import synthesis
     synthesis._frontend = _frontend
@@ -397,7 +397,7 @@ def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeake
     model_eval.load_state_dict(model.state_dict())
 
     # hard coded
-    speaker_ids = [0, 1, hparams.n_speakers-1] if ismultispeaker else [None]
+    speaker_ids = [0, 1, 10] if ismultispeaker else [None]
     for speaker_id in speaker_ids:
         speaker_str = "multispeaker{}".format(speaker_id) if speaker_id is not None else "single"
 
@@ -666,7 +666,7 @@ Please set a larger value for ``max_position`` in hyper parameters.""".format(
             if hparams.masked_loss_weight > 0:
                 # decoder output domain mask
                 decoder_target_mask = sequence_mask(
-                    target_lengths // (r * downsample_step),
+                    torch.true_divide(target_lengths, (r * downsample_step)),
                     max_len=mel.size(1)).unsqueeze(-1)
                 if downsample_step > 1:
                     # spectrogram-domain mask
